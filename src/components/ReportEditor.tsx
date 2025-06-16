@@ -39,11 +39,18 @@ const CustomImage = Node.create({
       {
         tag: 'img[src]',
       },
+      {
+        tag: 'div[class="custom-image-wrapper"] img[src]',
+        getAttrs: (element) => {
+          const img = element instanceof HTMLElement ? element.querySelector('img') || element : element;
+          return img instanceof HTMLElement ? { src: img.getAttribute('src') } : {};
+        },
+      },
     ];
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['div', { class: 'custom-image-wrapper' }, ['img', mergeAttributes(HTMLAttributes, { class: 'custom-image' })], ['button', { class: 'image-delete-button' }, '×']];
+    return ['div', { class: 'custom-image-wrapper' }, ['img', mergeAttributes(HTMLAttributes, { class: 'custom-image' })]];
   },
 
   addNodeView() {
@@ -87,6 +94,16 @@ export function ReportEditor<T extends FieldValues>({ control, name, error, init
   const [linkUrl, setLinkUrl] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // 既存HTMLから削除ボタンを除去する関数
+  const cleanInitialContent = (content: string) => {
+    if (!content) return '';
+    // 削除ボタンのHTMLを除去
+    return content
+      .replace(/<button[^>]*class="image-delete-button"[^>]*>.*?<\/button>/gi, '')
+      .replace(/×/g, '') // 単体の×文字も除去
+      .trim();
+  };
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -101,7 +118,7 @@ export function ReportEditor<T extends FieldValues>({ control, name, error, init
       }),
       CustomImage,
     ],
-    content: initialContent || '',
+    content: cleanInitialContent(initialContent || ''),
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
       const isEmpty = html === '<p></p>' || html === '<p><br></p>' || html.trim() === '';
@@ -151,20 +168,23 @@ export function ReportEditor<T extends FieldValues>({ control, name, error, init
 
   useEffect(() => {
     const addDeleteButtonToImages = () => {
-      const images = document.querySelectorAll('.editor-image:not(:has(.image-delete-button))');
-      images.forEach((img) => {
+      const wrappers = document.querySelectorAll('.custom-image-wrapper:not(:has(.image-delete-button))');
+      wrappers.forEach((wrapper) => {
+        const img = wrapper.querySelector('.custom-image');
+        if (!img) return;
+        
         const button = document.createElement('button');
         button.className = 'image-delete-button';
         button.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>';
         button.onclick = (e) => {
           e.preventDefault();
           e.stopPropagation();
-          const pos = editor?.view.posAtDOM(img, 0);
+          const pos = editor?.view.posAtDOM(wrapper, 0);
           if (pos !== undefined) {
             editor?.chain().focus().deleteRange({ from: pos, to: pos + 1 }).run();
           }
         };
-        img.appendChild(button);
+        wrapper.appendChild(button);
       });
     };
 

@@ -38,6 +38,15 @@ export default function ReportsPage() {
   const [selectedTags, setSelectedTags] = useState<TagType[]>([]);
   const [selectedUser, setSelectedUser] = useState("");
 
+  // HTMLコンテンツから削除ボタンを除去する関数
+  const cleanHtmlContent = (content: string) => {
+    if (!content) return '';
+    return content
+      .replace(/<button[^>]*class="image-delete-button"[^>]*>.*?<\/button>/gi, '')
+      .replace(/×/g, '') // 単体の×文字も除去
+      .trim();
+  };
+
   // ハイドレーションチェック
   useEffect(() => {
     setIsMounted(true);
@@ -203,7 +212,7 @@ export default function ReportsPage() {
                   '& img': { maxWidth: '300px', height: 'auto' },
                 }}
                 dangerouslySetInnerHTML={{
-                  __html: sanitizeHtml(report.content, {
+                  __html: sanitizeHtml(cleanHtmlContent(report.content), {
                     allowedTags: ['p', 'br', 'strong', 'em', 'ul', 'ol', 'li', 'a', 'img'],
                     allowedAttributes: {
                       'a': ['href', 'target', 'rel'],

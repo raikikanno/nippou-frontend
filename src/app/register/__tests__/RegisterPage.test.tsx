@@ -7,6 +7,10 @@ describe("RegisterPage", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (global.fetch as jest.Mock) = jest.fn();
+    
+    // 環境変数をモック
+    process.env.NEXT_PUBLIC_REGISTER_AUTH_ID = "raiki";
+    process.env.NEXT_PUBLIC_REGISTER_AUTH_PASSWORD = "test";
   });
 
   const setup = (isAuthenticated = false) => {
