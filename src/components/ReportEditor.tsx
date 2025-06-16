@@ -278,6 +278,14 @@ export function ReportEditor<T extends FieldValues>({ control, name, error, init
                   border: '1px solid #ccc',
                   borderRadius: '4px',
                   '& p': { margin: '0.5em 0' },
+                  '& ul, & ol': { 
+                    paddingLeft: '20px',
+                    marginLeft: '8px',
+                    margin: '0.5em 0' 
+                  },
+                  '& li': { 
+                    marginBottom: '0.25em' 
+                  },
                   '& .editor-link': { color: 'blue', textDecoration: 'underline' },
                   '& .custom-image-wrapper': {
                     display: 'inline-block',
