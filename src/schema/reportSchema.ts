@@ -10,6 +10,7 @@ export const reportSchema = z
     date: z.string().optional(),
     tags: z.array(z.object({ name: z.string() })).default([]),
     content: z.string().min(1, "内容を入力してください"),
+    createdAt: z.string().optional(),
   })
   .passthrough();
 

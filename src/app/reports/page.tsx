@@ -81,21 +81,26 @@ export default function ReportsPage() {
   const allUsers = Array.from(new Set(reports.map((r) => r.userName)));
 
   // フィルター後の全レポート
-  const filteredReports = reports.filter((report) => {
-    if (team !== "全チーム" && report.team !== team) return false;
-    if (selectedUser && report.userName !== selectedUser) return false;
+  const filteredReports = reports
+    .filter((report) => {
+      if (team !== "全チーム" && report.team !== team) return false;
+      if (selectedUser && report.userName !== selectedUser) return false;
 
-    if (
-      selectedTags.length > 0 &&
-      !selectedTags.every((selT) =>
-        report.tags.some((rt) => rt.name === selT.name)
-      )
-    ) {
-      return false;
-    }
+      if (
+        selectedTags.length > 0 &&
+        !selectedTags.every((selT) =>
+          report.tags.some((rt) => rt.name === selT.name)
+        )
+      ) {
+        return false;
+      }
 
-    return true;
-  }).sort((a, b) => new Date(b.date!).getTime() - new Date(a.date!).getTime());
+      return true;
+    })
+    .sort((a, b) => {
+      if (!a.createdAt || !b.createdAt) return 0;
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
 
   const handleDelete = async (id: string) => {
     if (!confirm("本当に削除しますか？")) return;
@@ -165,7 +170,13 @@ export default function ReportsPage() {
         {filteredReports.map((report) => (
           <Card key={report.id}>
             <CardContent>
-              <Typography variant="subtitle2">{report.date}</Typography>
+              <Typography variant="subtitle2">
+                {report.date} {report.createdAt && new Date(report.createdAt).toLocaleTimeString('ja-JP', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: false
+                })}
+              </Typography>
               <Typography variant="h6">
                 {report.userName}（{report.team}）
               </Typography>
