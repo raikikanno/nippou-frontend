@@ -23,6 +23,7 @@ export default function EditReportPage() {
   const [isMounted, setIsMounted] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [lastEnterTime, setLastEnterTime] = useState<number>(0);
 
   const reportId = params.id?.toString();
   const report = Array.isArray(reports) ? reports.find((r) => r.id === reportId) : undefined;
@@ -179,7 +180,13 @@ export default function EditReportPage() {
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
                             e.preventDefault();
-                            commitInputValue();
+                            const now = Date.now();
+                            
+                            // 300ms以内に連続でEnterが押された場合のみタグを作成
+                            if (now - lastEnterTime < 300) {
+                              commitInputValue();
+                            }
+                            setLastEnterTime(now);
                           }
                         }}
                       />

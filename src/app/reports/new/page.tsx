@@ -22,6 +22,7 @@ export default function NewReportPage() {
   const [suggestedTags, setSuggestedTags] = useState<TagType[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [lastEnterTime, setLastEnterTime] = useState<number>(0);
   const setReports = useSetAtom(reportsAtom);
 
   const {
@@ -186,7 +187,13 @@ export default function NewReportPage() {
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
                           e.preventDefault();
-                          commitInputValue();
+                          const now = Date.now();
+                          
+                          // 300ms以内に連続でEnterが押された場合のみタグを作成
+                          if (now - lastEnterTime < 300) {
+                            commitInputValue();
+                          }
+                          setLastEnterTime(now);
                         }
                       }}
                     />
