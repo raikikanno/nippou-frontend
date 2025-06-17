@@ -1,12 +1,12 @@
-import { ReportInput } from "@/types/report";
+import { Report } from "@/types";
 
-export const fetchReports = async (): Promise<ReportInput[]> => {
+export const fetchReports = async (): Promise<Report[]> => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reports`);
   if (!res.ok) throw new Error("取得失敗");
   return res.json();
 };
 
-export const createReport = async (data: ReportInput): Promise<void> => {
+export const createReport = async (data: Report): Promise<void> => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reports`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -15,7 +15,7 @@ export const createReport = async (data: ReportInput): Promise<void> => {
   if (!res.ok) throw new Error("作成失敗");
 };
 
-export const updateReport = async (id: string, data: ReportInput): Promise<void> => {
+export const updateReport = async (id: string, data: Report): Promise<void> => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reports/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },

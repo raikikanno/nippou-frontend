@@ -3,7 +3,7 @@ import ReportsPage from "../page";
 import { Provider as JotaiProvider, createStore } from "jotai";
 import { userAtom } from "@/atoms/user";
 import { reportsAtom } from "@/atoms/reports";
-import { ReportInput } from "@/types/report";
+import { Report } from "@/types";
 import { act } from "react";
 import { useRouter } from "next/navigation";
 
@@ -16,7 +16,7 @@ const mockUser = {
   verified: true,
 } as const;
 
-const mockReports: ReportInput[] = [
+const mockReports: Report[] = [
   {
     id: "1",
     userId: "user-1",
@@ -25,6 +25,7 @@ const mockReports: ReportInput[] = [
     tags: [{ name: "開発" }],
     content: "API実装",
     date: "2024-01-01",
+    createdAt: "2024-01-01T09:00:00Z",
   },
   {
     id: "2",
@@ -34,6 +35,7 @@ const mockReports: ReportInput[] = [
     tags: [{ name: "営業" }],
     content: "顧客対応",
     date: "2024-01-02",
+    createdAt: "2024-01-02T09:00:00Z",
   },
 ];
 
@@ -120,18 +122,20 @@ describe("ReportsPage", () => {
           userId: "user-1",
           userName: "テストユーザー",
           team: "開発",
-          tags: [{ id: 1, name: "開発" }],
+          tags: [{ name: "開発" }],
           content: "API実装",
           date: "2024-01-01",
+          createdAt: "2024-01-01T09:00:00Z",
         },
         {
           id: "2",
           userId: "user-2",
           userName: "別ユーザー",
           team: "営業",
-          tags: [{ id: 2, name: "営業" }],
+          tags: [{ name: "営業" }],
           content: "顧客対応",
           date: "2024-01-02",
+          createdAt: "2024-01-02T09:00:00Z",
         },
       ];
       

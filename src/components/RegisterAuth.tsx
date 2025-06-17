@@ -1,10 +1,10 @@
 import { Box, TextField, Button, Typography, Alert } from "@mui/material";
 import { useAtom } from "jotai";
-import { registerAuthAtom } from "@/atoms/auth";
+import { authAtom } from "@/atoms/auth";
 import { useState } from "react";
 
 export const RegisterAuth = () => {
-  const [auth, setAuth] = useAtom(registerAuthAtom);
+  const [auth, setAuth] = useAtom(authAtom);
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");

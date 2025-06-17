@@ -1,24 +1,23 @@
 import { useSetAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { userAtom } from "@/atoms/user";
+import { authService } from "@/services/auth";
+import { useCallback } from "react";
 
 export function useLogout() {
   const setUser = useSetAtom(userAtom);
   const router = useRouter();
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
-        method: "POST",
-        credentials: "include",
-      });
-    } catch (_e) {
-      console.log("ログアウト処理中にエラーが発生しました");
+      await authService.logout();
+    } catch (error) {
+      console.error("ログアウト処理中にエラーが発生しました:", error);
     } finally {
       setUser(null); // クライアント側の状態もリセット
       router.push("/login");
     }
-  };
+  }, [setUser, router]);
 
   return logout;
 }

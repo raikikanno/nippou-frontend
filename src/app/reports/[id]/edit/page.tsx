@@ -8,12 +8,12 @@ import { useEffect, useState } from "react";
 import { Box, Typography, Stack, TextField, Button, Autocomplete, Chip, CircularProgress } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { reportSchema } from "@/schema/reportSchema";
-import { ReportInput } from "@/types/report";
-import { ReportEditor } from "@/components/ReportEditor";
+import { reportFormSchema } from "@/schema/reportSchema";
+import { Report } from "@/types";
+import { ReportEditor } from "@/components/features/report-editor/ReportEditor";
 import { z } from "zod";
 
-type FormData = z.input<typeof reportSchema>;
+type FormData = z.input<typeof reportFormSchema>;
 
 export default function EditReportPage() {
   const params = useParams();
@@ -34,7 +34,7 @@ export default function EditReportPage() {
     reset,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(reportSchema),
+    resolver: zodResolver(reportFormSchema),
     defaultValues: {
       tags: [] as { name: string }[],
       content: "",
@@ -69,7 +69,7 @@ export default function EditReportPage() {
     if (!report) return;
 
     setIsLoading(true);
-    const updated: ReportInput = {
+    const updated: Report = {
       ...report,
       tags: data.tags || [],
       content: data.content,

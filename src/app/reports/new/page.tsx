@@ -5,15 +5,15 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAtom, useSetAtom } from "jotai";
 import { userAtom } from "@/atoms/user";
-import { reportSchema } from "@/schema/reportSchema";
+import { reportFormSchema } from "@/schema/reportSchema";
 import { reportsAtom } from "@/atoms/reports";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { z } from "zod";
-import { ReportEditor } from "@/components/ReportEditor";
+import { ReportEditor } from "@/components/features/report-editor/ReportEditor";
 
 type TagType = { name: string };
-type FormData = z.input<typeof reportSchema>;
+type FormData = z.input<typeof reportFormSchema>;
 
 export default function NewReportPage() {
   const router = useRouter();
@@ -30,7 +30,7 @@ export default function NewReportPage() {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(reportSchema),
+    resolver: zodResolver(reportFormSchema),
     defaultValues: {
       tags: [] as { name: string }[],
       content: "",
