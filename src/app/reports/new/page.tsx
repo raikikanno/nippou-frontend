@@ -61,8 +61,7 @@ export default function NewReportPage() {
       const allReports = await fetchRes.json();
       setReports(allReports);
 
-      alert("投稿成功");
-      router.push("/reports");
+      router.push("/reports?success=投稿成功");
     } catch (err) {
       console.error("送信エラー:", err);
       alert("投稿に失敗しました");
