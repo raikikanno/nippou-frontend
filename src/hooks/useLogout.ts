@@ -1,11 +1,12 @@
 import { useSetAtom } from "jotai";
 import { useRouter } from "next/navigation";
-import { userAtom } from "@/atoms/user";
+import { userAtom, authInitializedAtom } from "@/atoms/user";
 import { authService } from "@/services/auth";
 import { useCallback } from "react";
 
 export function useLogout() {
   const setUser = useSetAtom(userAtom);
+  const setAuthInitialized = useSetAtom(authInitializedAtom);
   const router = useRouter();
 
   const logout = useCallback(async () => {
@@ -14,10 +15,11 @@ export function useLogout() {
     } catch (error) {
       console.error("ログアウト処理中にエラーが発生しました:", error);
     } finally {
-      setUser(null); // クライアント側の状態もリセット
+      setUser(null);
+      setAuthInitialized(false);
       router.push("/login");
     }
-  }, [setUser, router]);
+  }, [setUser, setAuthInitialized, router]);
 
   return logout;
 }

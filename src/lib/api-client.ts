@@ -27,12 +27,20 @@ export class ApiClient {
     
     const config: RequestInit = {
       ...REQUEST_CONFIG.WITH_CREDENTIALS,
+      ...options,
       headers: {
         ...REQUEST_CONFIG.DEFAULT_HEADERS,
         ...options?.headers,
       },
-      ...options,
     };
+
+    // デバッグ用: リクエスト情報をコンソールに出力
+    console.log('API Request:', {
+      url,
+      method: config.method,
+      headers: config.headers,
+      body: config.body,
+    });
 
     try {
       const response = await fetch(url, config);
@@ -77,7 +85,7 @@ export class ApiClient {
     return this.request<T>(endpoint, {
       method: 'POST',
       body: body ? JSON.stringify(body) : undefined,
-      headers,
+      headers: headers || {},
     });
   }
 
@@ -89,7 +97,7 @@ export class ApiClient {
     return this.request<T>(endpoint, {
       method: 'PUT',
       body: body ? JSON.stringify(body) : undefined,
-      headers,
+      headers: headers || {},
     });
   }
 
