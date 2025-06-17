@@ -23,11 +23,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       setUserLoading({ isLoading: true, error: null });
       
       try {
-        // サーバーから最新の認証状態を取得
+        // サーバーからクッキーベースで認証状態を取得
         const result = await authService.getMe();
         
         if (result.error) {
-          // サーバーエラーの場合、ローカルストレージの情報をクリア
+          // 認証に失敗した場合（クッキーが無効など）
           console.warn("認証確認時にエラーが発生:", result.error);
           setUser(null);
           setUserLoading({ isLoading: false, error: result.error });
@@ -38,8 +38,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         }
       } catch (error) {
         console.error("認証情報の取得に失敗しました:", error);
-        // ネットワークエラーなどの場合は、ローカルストレージの情報を保持
-        // ただし、エラー状態は記録
+        // ネットワークエラーなどの場合
+        setUser(null);
         setUserLoading({ 
           isLoading: false, 
           error: error instanceof Error ? error.message : "認証確認に失敗しました" 
@@ -71,7 +71,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <div>認証情報を確認中…</div>
             {userLoading.error && (
               <div style={{ color: "orange", marginTop: "10px", fontSize: "14px" }}>
-                ネットワークエラーが発生していますが、ローカルの認証情報で継続します
+                {userLoading.error.includes("認証") ? 
+                  "ログインが必要です" : 
+                  "ネットワークエラーが発生しています"
+                }
               </div>
             )}
           </div>
