@@ -88,7 +88,7 @@ export default function EditReportPage() {
       const updatedList = await fetchRes.json();
       setReports(updatedList);
 
-      router.push("/reports");
+      router.push("/reports?success=更新成功");
     } catch (err) {
       console.error("更新エラー:", err);
       alert("更新に失敗しました");

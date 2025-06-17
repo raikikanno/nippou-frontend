@@ -14,13 +14,15 @@ import {
   Typography,
 } from "@mui/material";
 import { useAtom } from "jotai";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { reportsAtom } from "@/atoms/reports";
 import { Report } from "@/types";
 import { fetchReports, deleteReport } from "./_api";
 import { useLogout } from "@/hooks/useLogout";
 import sanitizeHtml from 'sanitize-html';
+import { useToast } from "@/hooks/useToast";
+import { Toast } from "@/components/ui/Toast";
 
 type TagType = {
   id?: number;
@@ -31,8 +33,10 @@ export default function ReportsPage() {
   const [reports, setReports] = useAtom(reportsAtom);
   const [user] = useAtom(userAtom);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isMounted, setIsMounted] = useState(false);
   const logout = useLogout();
+  const { toast, showSuccess, hideToast } = useToast();
 
   // フィルター用ステート
   const [team, setTeam] = useState("全チーム");
@@ -59,6 +63,16 @@ export default function ReportsPage() {
       router.push("/login");
     }
   }, [isMounted, user, router]);
+
+  // 成功メッセージの表示
+  useEffect(() => {
+    const successMessage = searchParams.get('success');
+    if (successMessage) {
+      showSuccess(successMessage);
+      // URLパラメータをクリア
+      router.replace('/reports');
+    }
+  }, [searchParams, showSuccess, router]);
 
   // データ取得
   useEffect(() => {
@@ -246,6 +260,14 @@ export default function ReportsPage() {
           </Card>
         ))}
       </Stack>
+
+      {/* Toast通知 */}
+      <Toast
+        open={toast.open}
+        message={toast.message}
+        type={toast.type}
+        onClose={hideToast}
+      />
     </Box>
   );
 }

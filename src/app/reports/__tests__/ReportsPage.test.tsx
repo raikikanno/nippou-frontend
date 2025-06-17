@@ -42,7 +42,13 @@ const mockReports: Report[] = [
 // next/navigation のモック
 jest.mock("next/navigation", () => {
   const actual = jest.requireActual<typeof import("next/navigation")>("next/navigation");
-  return { ...actual, useRouter: jest.fn() };
+  return { 
+    ...actual, 
+    useRouter: jest.fn(),
+    useSearchParams: jest.fn(() => ({
+      get: jest.fn(() => null),
+    })),
+  };
 });
 
 jest.spyOn(global, "confirm").mockImplementation(() => true);
