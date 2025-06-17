@@ -1,13 +1,15 @@
 "use client";
 
-import { userAtom } from "@/atoms/user";
+import { userAtom, authInitializedAtom } from "@/atoms/user";
+import { authService } from "@/services/auth";
 import { Box, Button, TextField, Typography, CircularProgress } from "@mui/material";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function LoginPage() {
   const [, setUser] = useAtom(userAtom);
+  const setAuthInitialized = useSetAtom(authInitializedAtom);
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,25 +30,33 @@ export default function LoginPage() {
     
     setIsLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-        credentials: "include",
-      });
-
-      if (res.ok) {
-        const userRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
-          credentials: "include",
-        });
-        const userData = await userRes.json();
-        setUser(userData);
-        router.push("/reports");
-      } else {
-        await res.text();
+      // authServiceを使用してログイン
+      const loginResult = await authService.login(email, password);
+      
+      if (loginResult.error) {
         setMessage("メールアドレスもしくはパスワードが間違っています");
+        return;
       }
-    } catch (_err) {
+
+      // ログイン成功後、最新のユーザー情報を取得
+      const userResult = await authService.getMe();
+      
+      if (userResult.error) {
+        setMessage("ユーザー情報の取得に失敗しました");
+        return;
+      }
+      
+      // ユーザー情報をatomに保存（自動的にローカルストレージにも保存される）
+      setUser(userResult.data || null);
+      
+      // 認証が初期化されたことをマーク
+      setAuthInitialized(true);
+      
+      // レポートページにリダイレクト
+      router.push("/reports");
+      
+    } catch (error) {
+      console.error("ログインエラー:", error);
       setMessage("ログインに失敗しました");
     } finally {
       setIsLoading(false);
@@ -77,6 +87,11 @@ export default function LoginPage() {
         fullWidth 
         margin="normal" 
         disabled={isLoading}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            handleLogin();
+          }
+        }}
       />
       <Button 
         variant="contained" 
