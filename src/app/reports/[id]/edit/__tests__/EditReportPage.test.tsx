@@ -3,7 +3,7 @@ import { Provider as JotaiProvider, createStore } from "jotai";
 import { userAtom } from "@/atoms/user";
 import { reportsAtom } from "@/atoms/reports";
 import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
-import { ReportInput } from "@/types/report";
+import { Report } from "@/types";
 
 jest.mock("next/navigation", () => ({
   useParams: () => ({ id: "report-1" }),
@@ -20,7 +20,7 @@ interface SetupOptions {
     email: string;
     verified: boolean;
   };
-  initialReport?: ReportInput;
+      initialReport?: Report;
 }
 
 const setup = async (options: SetupOptions = {}) => {
@@ -33,7 +33,7 @@ const setup = async (options: SetupOptions = {}) => {
     verified: true,
   };
 
-  const mockReport: ReportInput = options.initialReport ?? {
+  const mockReport: Report = options.initialReport ?? {
     id: "report-1",
     userId: "user-1",
     userName: "テストユーザー",
@@ -41,6 +41,7 @@ const setup = async (options: SetupOptions = {}) => {
     tags: [{ name: "開発" }],
     content: "テスト内容",
     date: "2024-01-01",
+    createdAt: "2024-01-01T09:00:00Z",
   };
 
   store.set(userAtom, mockUser);
@@ -84,6 +85,7 @@ describe("EditReportPage", () => {
         date: "2024-01-01",
         tags: [{ name: "開発" }, { name: "会議" }],
         content: "昨日はAPIを実装しました。",
+        createdAt: "2024-01-01T09:00:00Z",
       },
     ];
 
@@ -107,7 +109,7 @@ describe("EditReportPage", () => {
     });
   });
   it("更新ボタンを押すと fetch が呼ばれる", async () => {
-    const mockReport: ReportInput = {
+    const mockReport: Report = {
       id: "report-1",
       userId: "user-1",
       userName: "テストユーザー",
@@ -115,6 +117,7 @@ describe("EditReportPage", () => {
       tags: [{ name: "開発" }],
       content: "新しい内容",
       date: "2024-01-01",
+      createdAt: "2024-01-01T09:00:00Z",
     };
 
     await setup({ initialReport: mockReport });
@@ -163,6 +166,7 @@ describe("EditReportPage", () => {
         date: "2024-01-01",
         tags: [{ name: "開発" }],
         content: "元の内容",
+        createdAt: "2024-01-01T09:00:00Z",
       },
     ];
 

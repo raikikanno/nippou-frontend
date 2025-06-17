@@ -1,10 +1,10 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { Box, Button, TextField, Typography, CircularProgress } from "@mui/material";
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get("token");
@@ -102,5 +102,17 @@ export default function ResetPasswordPage() {
       </Button>
       {message && <Typography mt={2}>{message}</Typography>}
     </Box>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={
+      <Box p={4}>
+        <Typography>読み込み中...</Typography>
+      </Box>
+    }>
+      <ResetPasswordForm />
+    </Suspense>
   );
 }

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, TextField, Button, Typography, CircularProgress, Alert } from "@mui/material";
 import { useAtom } from "jotai";
-import { registerAuthAtom } from "@/atoms/auth";
+import { authAtom } from "@/atoms/auth";
 import { RegisterAuth } from "@/components/RegisterAuth";
 
 export default function RegisterPage() {
@@ -14,7 +14,7 @@ export default function RegisterPage() {
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [auth, setAuth] = useAtom(registerAuthAtom);
+  const [auth, setAuth] = useAtom(authAtom);
 
   useEffect(() => {
     // 認証状態を初期化

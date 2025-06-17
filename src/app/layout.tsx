@@ -1,53 +1,52 @@
 "use client";
 
 import "./globals.css";
-import { ReactNode, useEffect, useState } from "react";
-import { useSetAtom, useAtomValue } from "jotai";
-import { userAtom } from "@/atoms/user";
+import { ReactNode, useEffect } from "react";
+import { useSetAtom, useAtomValue, useAtom } from "jotai";
+import { userAtom, userLoadingAtom } from "@/atoms/user";
 import { useRouter, usePathname } from "next/navigation";
+import { authService } from "@/services/auth";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   const setUser = useSetAtom(userAtom);
   const user = useAtomValue(userAtom);
+  const [userLoading, setUserLoading] = useAtom(userLoadingAtom);
   const router = useRouter();
   const pathname = usePathname();
 
-
-  const [isFetchingUser, setIsFetchingUser] = useState(true);
-
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
-      method: "GET",
-      credentials: "include", // Cookie を送るために必須
-    })
-      .then(async (res) => {
-        if (!res.ok) {
-          // 401, 403 などが返った場合は「未ログイン」と判断
-          return null;
+    const initializeAuth = async () => {
+      setUserLoading({ isLoading: true, error: null });
+      
+      try {
+        const result = await authService.getMe();
+        
+        if (result.error) {
+          setUser(null);
+        } else {
+          setUser(result.data || null);
         }
-        return res.json();
-      })
-      .then((userData) => {
-        setUser(userData); // userData が null の場合も setUser(null) になる
-      })
-      .catch(() => {
+      } catch (error) {
+        console.error("認証情報の取得に失敗しました:", error);
         setUser(null);
-      })
-      .finally(() => {
-        setIsFetchingUser(false); 
-      });
-  }, [setUser]);
+      } finally {
+        setUserLoading({ isLoading: false, error: null });
+      }
+    };
 
+    initializeAuth();
+  }, [setUser, setUserLoading]);
 
   useEffect(() => {
-    if (isFetchingUser) return;
+    if (userLoading.isLoading) return;
+    
     const loginRequired = pathname.startsWith("/reports");
     if (!user && loginRequired) {
       router.replace("/login");
     }
-  }, [isFetchingUser, user, pathname, router]);
+  }, [userLoading.isLoading, user, pathname, router]);
 
-  if (isFetchingUser) {
+  if (userLoading.isLoading) {
     return (
       <html lang="ja">
         <body>

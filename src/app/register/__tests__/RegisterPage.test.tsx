@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import RegisterPage from "../page";
 import { Provider as JotaiProvider, createStore } from "jotai";
-import { registerAuthAtom } from "@/atoms/auth";
+import { authAtom } from "@/atoms/auth";
 
 describe("RegisterPage", () => {
   beforeEach(() => {
@@ -15,7 +15,7 @@ describe("RegisterPage", () => {
 
   const setup = (isAuthenticated = false) => {
     const store = createStore();
-    store.set(registerAuthAtom, { isAuthenticated, isInitialized: true });
+    store.set(authAtom, { isAuthenticated, isInitialized: true });
 
     render(
       <JotaiProvider store={store}>

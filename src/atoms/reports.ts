@@ -1,5 +1,9 @@
 import { atom } from "jotai";
-import { ReportInput } from "@/types/report";
+import { Report, LoadingState } from "@/types";
 
-export type ReportData = ReportInput;
-export const reportsAtom = atom<ReportData[]>([]);
+export const reportsAtom = atom<Report[]>([]);
+
+export const reportsLoadingAtom = atom<LoadingState>({
+  isLoading: false,
+  error: null,
+});

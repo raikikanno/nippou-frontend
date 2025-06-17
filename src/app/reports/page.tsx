@@ -16,7 +16,8 @@ import {
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { reportsAtom, ReportData } from "@/atoms/reports";
+import { reportsAtom } from "@/atoms/reports";
+import { Report } from "@/types";
 import { fetchReports, deleteReport } from "./_api";
 import { useLogout } from "@/hooks/useLogout";
 import sanitizeHtml from 'sanitize-html';
@@ -64,7 +65,7 @@ export default function ReportsPage() {
     const load = async () => {
       try {
         const data = await fetchReports();
-        setReports(data as ReportData[]);
+        setReports(data as Report[]);
       } catch (err) {
         console.error("日報の取得エラー:", err);
       }
@@ -116,7 +117,7 @@ export default function ReportsPage() {
     try {
       await deleteReport(id);
       const refreshed = await fetchReports();
-      setReports(refreshed as ReportData[]);
+      setReports(refreshed as Report[]);
     } catch (err) {
       console.error("削除エラー:", err);
       alert("削除に失敗しました");
