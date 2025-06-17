@@ -42,6 +42,7 @@ export default function ReportsPage() {
   const [team, setTeam] = useState("全チーム");
   const [selectedTags, setSelectedTags] = useState<TagType[]>([]);
   const [selectedUser, setSelectedUser] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState("");
 
   // HTMLコンテンツから削除ボタンを除去する関数
   const cleanHtmlContent = (content: string) => {
@@ -50,6 +51,18 @@ export default function ReportsPage() {
       .replace(/<button[^>]*class="image-delete-button"[^>]*>.*?<\/button>/gi, '')
       .replace(/×/g, '') // 単体の×文字も除去
       .trim();
+  };
+
+  // キーワード検索用の関数
+  const searchInContent = (content: string, keyword: string) => {
+    if (!keyword.trim()) return true;
+    
+    // HTMLタグを除去してテキストのみを取得
+    const cleanContent = cleanHtmlContent(content);
+    const textContent = cleanContent.replace(/<[^>]*>/g, '');
+    
+    // 完全一致検索（大文字小文字を区別しない）
+    return textContent.toLowerCase().includes(keyword.toLowerCase());
   };
 
   // ハイドレーションチェック
@@ -116,6 +129,11 @@ export default function ReportsPage() {
           report.tags.some((rt) => rt.name === selT.name)
         )
       ) {
+        return false;
+      }
+
+      // キーワード検索
+      if (searchKeyword && !searchInContent(report.content, searchKeyword)) {
         return false;
       }
 
@@ -187,6 +205,15 @@ export default function ReportsPage() {
           onChange={(_, newValue) => setSelectedUser(newValue || "")}
           renderInput={(params) => <TextField {...params} label="ユーザー" />}
           sx={{ minWidth: 200 }}
+        />
+
+        {/* キーワード検索 */}
+        <TextField
+          label="キーワード検索"
+          value={searchKeyword}
+          onChange={(e) => setSearchKeyword(e.target.value)}
+          placeholder="投稿内容から検索"
+          sx={{ minWidth: 250 }}
         />
       </Stack>
 
