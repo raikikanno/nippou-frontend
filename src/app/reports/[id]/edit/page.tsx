@@ -204,14 +204,23 @@ export default function EditReportPage() {
             initialContent={report.content}
           />
 
-          <Button 
-            type="submit" 
-            variant="contained"
-            disabled={isLoading}
-            startIcon={isLoading ? <CircularProgress size={20} /> : undefined}
-          >
-            {isLoading ? "処理中です..." : "更新"}
-          </Button>
+          <Stack direction="row" spacing={2}>
+            <Button 
+              type="submit" 
+              variant="contained"
+              disabled={isLoading}
+              startIcon={isLoading ? <CircularProgress size={20} /> : undefined}
+            >
+              {isLoading ? "処理中です..." : "更新"}
+            </Button>
+            <Button 
+              variant="outlined"
+              onClick={() => router.push("/reports")}
+              disabled={isLoading}
+            >
+              キャンセル
+            </Button>
+          </Stack>
         </Stack>
       </form>
     </Box>
