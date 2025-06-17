@@ -23,7 +23,7 @@ export const Toast: React.FC<ToastProps> = ({
       open={open}
       autoHideDuration={autoHideDuration}
       onClose={onClose}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
     >
       <Alert onClose={onClose} severity={type as AlertColor} sx={{ width: '100%' }}>
         {message}
