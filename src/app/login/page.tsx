@@ -30,7 +30,7 @@ export default function LoginPage() {
     
     setIsLoading(true);
     try {
-      // authServiceを使用してログイン
+      // authServiceを使用してログイン（クッキーが自動設定される）
       const loginResult = await authService.login(email, password);
       
       if (loginResult.error) {
@@ -46,7 +46,7 @@ export default function LoginPage() {
         return;
       }
       
-      // ユーザー情報をatomに保存（自動的にローカルストレージにも保存される）
+      // ユーザー情報をatomに保存（クッキーベースなのでローカルストレージは不要）
       setUser(userResult.data || null);
       
       // 認証が初期化されたことをマーク
