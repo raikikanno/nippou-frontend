@@ -6,6 +6,7 @@ import { useSetAtom, useAtomValue, useAtom } from "jotai";
 import { userAtom, userLoadingAtom, authInitializedAtom, isAuthenticatedAtom } from "@/atoms/user";
 import { useRouter, usePathname } from "next/navigation";
 import { authService } from "@/services/auth";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   const setUser = useSetAtom(userAtom);
@@ -67,17 +68,19 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     return (
       <html lang="ja">
         <body>
-          <div style={{ textAlign: "center", marginTop: "20vh" }}>
-            <div>認証情報を確認中…</div>
-            {userLoading.error && (
-              <div style={{ color: "orange", marginTop: "10px", fontSize: "14px" }}>
-                {userLoading.error.includes("認証") ? 
-                  "ログインが必要です" : 
-                  "ネットワークエラーが発生しています"
-                }
-              </div>
-            )}
-          </div>
+          <ThemeProvider>
+            <div style={{ textAlign: "center", marginTop: "20vh" }}>
+              <div>認証情報を確認中…</div>
+              {userLoading.error && (
+                <div style={{ color: "orange", marginTop: "10px", fontSize: "14px" }}>
+                  {userLoading.error.includes("認証") ? 
+                    "ログインが必要です" : 
+                    "ネットワークエラーが発生しています"
+                  }
+                </div>
+              )}
+            </div>
+          </ThemeProvider>
         </body>
       </html>
     );
@@ -85,7 +88,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
   return (
     <html lang="ja">
-      <body>{children}</body>
+      <body>
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

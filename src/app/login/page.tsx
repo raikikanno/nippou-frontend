@@ -2,7 +2,7 @@
 
 import { userAtom, authInitializedAtom } from "@/atoms/user";
 import { authService } from "@/services/auth";
-import { Box, Button, TextField, Typography, CircularProgress } from "@mui/material";
+import { Box, Button, TextField, Typography, CircularProgress, Link } from "@mui/material";
 import { useAtom, useSetAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -103,14 +103,14 @@ export default function LoginPage() {
         {isLoading ? "処理中です..." : "ログイン"}
       </Button>
       <Typography variant="body2" sx={{ mt: 2 }}>
-        <a href="/register" style={{ textDecoration: "none", color: "#1976d2" }}>
+        <Link href="/register" color="primary">
           新規登録はこちら
-        </a>
+        </Link>
       </Typography>
       <Typography variant="body2" sx={{ mt: 2 }}>
-        <a href="/forgot-password" style={{ textDecoration: "none", color: "#1976d2" }}>
+        <Link href="/forgot-password" color="primary">
           パスワードを忘れた方はこちら
-        </a>
+        </Link>
       </Typography>
       {message && (
         <Typography color="error" sx={{ mt: 2 }}>

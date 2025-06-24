@@ -1,4 +1,4 @@
-import { Box, TextField, Button, Typography, Alert } from "@mui/material";
+import { Box, TextField, Button, Typography, Alert, Link } from "@mui/material";
 import { useAtom } from "jotai";
 import { authAtom } from "@/atoms/auth";
 import { useState } from "react";
@@ -60,6 +60,11 @@ export const RegisterAuth = () => {
           認証
         </Button>
       </Box>
+      <Typography variant="body2" sx={{ mt: 2 }}>
+        <Link href="/login" color="primary">
+          ログインページに戻る
+        </Link>
+      </Typography>
       {error && (
         <Alert severity="error" sx={{ mt: 2, maxWidth: 400 }}>
           {error}

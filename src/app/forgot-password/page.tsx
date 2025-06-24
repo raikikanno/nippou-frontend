@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Box, Button, TextField, Typography, CircularProgress } from "@mui/material";
+import { Box, Button, TextField, Typography, CircularProgress, Link } from "@mui/material";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -65,9 +65,15 @@ export default function ForgotPasswordPage() {
         onClick={handleSubmit}
         disabled={isLoading}
         startIcon={isLoading ? <CircularProgress size={20} /> : undefined}
+        sx={{ mt: 2 }}
       >
         {isLoading ? "処理中です..." : "メール送信"}
       </Button>
+      <Typography variant="body2" sx={{ mt: 2 }}>
+        <Link href="/login" color="primary">
+          ログインページに戻る
+        </Link>
+      </Typography>
       {message && <Typography mt={2}>{message}</Typography>}
       {error && <Typography mt={2} color="error">{error}</Typography>}
     </Box>
