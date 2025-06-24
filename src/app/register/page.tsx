@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Box, TextField, Button, Typography, CircularProgress, Alert } from "@mui/material";
+import { Box, TextField, Button, Typography, CircularProgress, Alert, Link } from "@mui/material";
 import { useAtom } from "jotai";
 import { authAtom } from "@/atoms/auth";
 import { RegisterAuth } from "@/components/RegisterAuth";
@@ -120,6 +120,12 @@ export default function RegisterPage() {
           )}
         </Button>
       </Box>
+      
+      <Typography variant="body2" sx={{ mt: 2 }}>
+        <Link href="/login" color="primary">
+          すでにアカウントをお持ちの方はこちら
+        </Link>
+      </Typography>
       
       {message && (
         <Alert 

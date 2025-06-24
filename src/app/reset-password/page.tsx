@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
-import { Box, Button, TextField, Typography, CircularProgress } from "@mui/material";
+import { Box, Button, TextField, Typography, CircularProgress, Link } from "@mui/material";
 
 function ResetPasswordForm() {
   const searchParams = useSearchParams();
@@ -64,10 +64,20 @@ function ResetPasswordForm() {
 
   if (!isMounted) return null;
 
-  if (error) {
+  if (!token) {
     return (
       <Box p={4}>
-        <Typography color="error">{error}</Typography>
+        <Typography variant="h5" gutterBottom>
+          パスワードリセット
+        </Typography>
+        <Typography color="error" gutterBottom>
+          無効なリセットリンクです。
+        </Typography>
+        <Typography variant="body2" sx={{ mt: 2 }}>
+          <Link href="/login" color="primary">
+            ログインページに戻る
+          </Link>
+        </Typography>
       </Box>
     );
   }
@@ -75,20 +85,38 @@ function ResetPasswordForm() {
   if (!confirmed) {
     return (
       <Box p={4}>
-        <Typography>確認中...</Typography>
+        <Typography variant="h5" gutterBottom>
+          パスワードリセット
+        </Typography>
+        {error ? (
+          <>
+            <Typography color="error" gutterBottom>
+              {error}
+            </Typography>
+            <Typography variant="body2" sx={{ mt: 2 }}>
+              <Link href="/login" color="primary">
+                ログインページに戻る
+              </Link>
+            </Typography>
+          </>
+        ) : (
+          <Typography>トークンを確認中...</Typography>
+        )}
       </Box>
     );
   }
 
   return (
     <Box p={4}>
-      <Typography variant="h5">新しいパスワードを入力</Typography>
-      <TextField 
-        label="新しいパスワード" 
-        type="password" 
-        value={password} 
-        onChange={(e) => setPassword(e.target.value)} 
-        fullWidth 
+      <Typography variant="h5" gutterBottom>
+        新しいパスワードを設定
+      </Typography>
+      <TextField
+        label="新しいパスワード"
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        fullWidth
         margin="normal"
         disabled={isLoading}
       />
@@ -97,21 +125,19 @@ function ResetPasswordForm() {
         onClick={handleSubmit}
         disabled={isLoading}
         startIcon={isLoading ? <CircularProgress size={20} /> : undefined}
+        sx={{ mt: 2 }}
       >
-        {isLoading ? "処理中です..." : "再設定"}
+        {isLoading ? "処理中です..." : "パスワードを変更"}
       </Button>
       {message && <Typography mt={2}>{message}</Typography>}
+      {error && <Typography mt={2} color="error">{error}</Typography>}
     </Box>
   );
 }
 
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={
-      <Box p={4}>
-        <Typography>読み込み中...</Typography>
-      </Box>
-    }>
+    <Suspense fallback={<div>Loading...</div>}>
       <ResetPasswordForm />
     </Suspense>
   );
